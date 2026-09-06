@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur Salaire Net Algérie - Brut en Net (IRG, CNAS)</title>
+<meta name="description" content="Calcule ton salaire net à partir du brut en Algérie, avec déduction CNAS et IRG.">
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+  header { background: #0b5d3b; color: white; padding: 25px 20px; text-align: center; }
+  header h1 { margin: 0; font-size: 24px; }
+  .container { max-width: 500px; margin: 40px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
+  input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+  button { margin-top: 20px; width: 100%; padding: 12px; background: #0b5d3b; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+  button:hover { background: #094a2f; }
+  .result { margin-top: 20px; padding: 15px; background: #eafaf1; border-radius: 8px; display: none; }
+  .result p { margin: 6px 0; font-size: 15px; }
+  .result strong { color: #0b5d3b; }
+  .back { display: block; text-align: center; margin-top: 20px; color: #0b5d3b; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Calculateur Salaire Net Algérie</h1>
+</header>
+
+<div class="container">
+  <label for="brut">Salaire brut mensuel (DZD)</label>
+  <input type="number" id="brut" placeholder="Ex: 60000">
+
+  <button onclick="calculer()">Calculer le salaire net</button>
+
+  <div class="result" id="resultat">
+    <p>Cotisation CNAS (9%) : <strong id="cnas"></strong> DZD</p>
+    <p>Salaire imposable : <strong id="imposable"></strong> DZD</p>
+    <p>IRG estimé : <strong id="irg"></strong> DZD</p>
+    <p>Salaire net : <strong id="net"></strong> DZD</p>
+  </div>
+
+  <a class="back" href="index.html">← Retour aux outils</a>
+</div>
+
+<script>
+function calculIRG(imposable) {
+  // Barème IRG mensuel simplifié (Algérie)
+  let irg = 0;
+  if (imposable <= 30000) {
+    irg = 0;
+  } else if (imposable <= 40000) {
+    irg = (imposable - 30000) * 0.23;
+  } else if (imposable <= 80000) {
+    irg = 2300 + (imposable - 40000) * 0.27;
+  } else if (imposable <= 160000) {
+    irg = 13100 + (imposable - 80000) * 0.30;
+  } else if (imposable <= 320000) {
+    irg = 37100 + (imposable - 160000) * 0.33;
+  } else {
