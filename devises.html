@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convertisseur Devises DZD EUR USD - Taux en Temps Réel</title>
+<meta name="description" content="Convertis facilement entre Dinar Algérien, Euro et Dollar avec les taux de change actuels.">
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+  header { background: #0b5d3b; color: white; padding: 25px 20px; text-align: center; }
+  header h1 { margin: 0; font-size: 24px; }
+  .container { max-width: 500px; margin: 40px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
+  input, select { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+  .row { display: flex; gap: 10px; align-items: end; }
+  .row > div { flex: 1; }
+  button { margin-top: 20px; width: 100%; padding: 12px; background: #0b5d3b; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+  button:hover { background: #094a2f; }
+  .result { margin-top: 20px; padding: 15px; background: #eafaf1; border-radius: 8px; display: none; text-align: center; }
+  .result p { margin: 6px 0; font-size: 20px; font-weight: bold; color: #0b5d3b; }
+  .rate-info { font-size: 12px; color: #888; text-align: center; margin-top: 10px; }
+  .back { display: block; text-align: center; margin-top: 20px; color: #0b5d3b; text-decoration: none; }
+  .loading { text-align: center; color: #888; font-size: 14px; margin-top: 15px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Convertisseur de Devises</h1>
+</header>
+
+<div class="container">
+  <label for="montant">Montant</label>
+  <input type="number" id="montant" placeholder="Ex: 100" value="1">
+
+  <div class="row">
+    <div>
+      <label for="de">De</label>
+      <select id="de">
+        <option value="DZD">DZD - Dinar Algérien</option>
+        <option value="EUR">EUR - Euro</option>
+        <option value="USD">USD - Dollar US</option>
+      </select>
+    </div>
+    <div>
