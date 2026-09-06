@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Générateur de CV Gratuit - Créer un CV en Ligne</title>
+<meta name="description" content="Crée ton CV gratuitement en ligne et télécharge-le en PDF, sans inscription.">
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+  header { background: #0b5d3b; color: white; padding: 25px 20px; text-align: center; }
+  header h1 { margin: 0; font-size: 24px; }
+  .wrapper { max-width: 1000px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 800px) { .wrapper { grid-template-columns: 1fr; } }
+
+  .form-box, .preview-box { background: white; border-radius: 10px; padding: 25px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  label { display: block; margin-top: 12px; font-weight: bold; font-size: 13px; }
+  input, textarea { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; font-family: Arial, sans-serif; }
+  textarea { resize: vertical; min-height: 60px; }
+  button { margin-top: 20px; width: 100%; padding: 12px; background: #0b5d3b; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+  button:hover { background: #094a2f; }
+
+  #cvPreview { font-family: 'Georgia', serif; padding: 10px; }
+  #cvPreview h2 { margin-bottom: 0; color: #0b5d3b; }
+  #cvPreview .contact { font-size: 13px; color: #555; margin-top: 4px; }
+  #cvPreview h3 { border-bottom: 2px solid #0b5d3b; padding-bottom: 4px; margin-top: 20px; color: #0b5d3b; font-size: 16px; }
+  #cvPreview p, #cvPreview li { font-size: 14px; line-height: 1.4; }
+
+  .back { display: block; text-align: center; margin: 20px 0; color: #0b5d3b; text-decoration: none; }
+
+  @media print {
+    header, .form-box, .back, button { display: none !important; }
+    .wrapper { display: block; }
+    .preview-box { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Générateur de CV Gratuit</h1>
+</header>
+
+<a class="back" href="index.html">← Retour aux outils</a>
+
+<div class="wrapper">
+  <div class="form-box">
+    <label>Nom complet</label>
+    <input type="text" id="nom" placeholder="Ex: Amine Benali">
+
+    <label>Titre / Poste recherché</label>
+    <input type="text" id="titre" placeholder="Ex: Développeur Web Junior">
+
+    <label>Téléphone</label>
+    <input type="text" id="telephone" placeholder="Ex: 0555 12 34 56">
+
+    <label>Email</label>
+    <input type="text" id="email" placeholder="Ex: amine.benali@email.com">
+
+    <label>Ville</label>
+    <input type="text" id="ville" placeholder="Ex: Alger, Algérie">
+
+    <label>Profil / Résumé</label>
+    <textarea id="profil" placeholder="2-3 phrases sur toi et tes objectifs professionnels"></textarea>
+
+    <label>Expérience professionnelle</label>
+    <textarea id="experience" placeholder="Ex: 2022-2024 : Stagiaire chez XYZ - Développement d'applications web"></textarea>
+
+    <label>Formation</label>
+    <textarea id="formation" placeholder="Ex: 2023 : Licence Informatique, Université d'Alger"></textarea>
+
+    <label>Compétences</label>
+    <textarea id="competences" placeholder="Ex: JavaScript, HTML/CSS, Gestion de projet"></textarea>
+
+    <label>Langues</label>
+    <input type="text" id="langues" placeholder="Ex: Arabe (natif), Français (courant), Anglais (intermédiaire)">
+
+    <button onclick="genererCV()">Générer l'aperçu</button>
+    <button onclick="window.print()" style="background:#555; margin-top:10px;">Télécharger en PDF</button>
+  </div>
+
+  <div class="preview-box">
+    <div id="cvPreview">
+      <p style="color:#999; text-align:center;">Remplis le formulaire à gauche, puis clique sur "Générer l'aperçu".</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function genererCV() {
+  const nom = document.getElementById('nom').value || "Ton Nom";
+  const titre = document.getElementById('titre').value || "";
+  const telephone = document.getElementById('telephone').value || "";
+  const email = document.getElementById('email').value || "";
+  const ville = document.getElementById('ville').value || "";
+  const profil = document.getElementById('profil').value || "";
+  const experience = document.getElementById('experience').value || "";
+  const formation = document.getElementById('formation').value || "";
+  const competences = document.getElementById('competences').value || "";
+  const langues = document.getElementById('langues').value || "";
+
+  let html = `<h2>${nom}</h2>`;
+  if (titre) html += `<p style="font-size:15px; color:#555; margin-top:0;">${titre}</p>`;
+
+  let contact = [telephone, email, ville].filter(x => x).join(' · ');
+  if (contact) html += `<p class="contact">${contact}</p>`;
+
+  if (profil) html += `<h3>Profil</h3><p>${profil.replace(/\n/g, '<br>')}</p>`;
+  if (experience) html += `<h3>Expérience professionnelle</h3><p>${experience.replace(/\n/g, '<br>')}</p>`;
+  if (formation) html += `<h3>Formation</h3><p>${formation.replace(/\n/g, '<br>')}</p>`;
+  if (competences) html += `<h3>Compétences</h3><p>${competences.replace(/\n/g, '<br>')}</p>`;
+  if (langues) html += `<h3>Langues</h3><p>${langues}</p>`;
+
+  document.getElementById('cvPreview').innerHTML = html;
+}
+</script>
+
+</body>
+</html>
