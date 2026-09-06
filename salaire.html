@@ -18,6 +18,7 @@
   .result p { margin: 6px 0; font-size: 15px; }
   .result strong { color: #0b5d3b; }
   .back { display: block; text-align: center; margin-top: 20px; color: #0b5d3b; text-decoration: none; }
+  .disclaimer { margin-top: 20px; font-size: 12px; color: #888; text-align: center; }
 </style>
 </head>
 <body>
@@ -39,21 +40,54 @@
     <p>Salaire net : <strong id="net"></strong> DZD</p>
   </div>
 
+  <p class="disclaimer">Estimation à titre indicatif, basée sur le barème IRG et la CNAS 2026 (sources DGI/CNAS). Ne remplace pas une fiche de paie officielle.</p>
+
   <a class="back" href="index.html">← Retour aux outils</a>
 </div>
 
 <script>
-function calculIRG(imposable) {
-  // Barème IRG mensuel simplifié (Algérie)
+function calculIRG_annuel(imposableAnnuel) {
   let irg = 0;
-  if (imposable <= 30000) {
+  if (imposableAnnuel <= 240000) {
     irg = 0;
-  } else if (imposable <= 40000) {
-    irg = (imposable - 30000) * 0.23;
-  } else if (imposable <= 80000) {
-    irg = 2300 + (imposable - 40000) * 0.27;
-  } else if (imposable <= 160000) {
-    irg = 13100 + (imposable - 80000) * 0.30;
-  } else if (imposable <= 320000) {
-    irg = 37100 + (imposable - 160000) * 0.33;
+  } else if (imposableAnnuel <= 480000) {
+    irg = (imposableAnnuel - 240000) * 0.23;
+  } else if (imposableAnnuel <= 960000) {
+    irg = 55200 + (imposableAnnuel - 480000) * 0.27;
+  } else if (imposableAnnuel <= 1920000) {
+    irg = 185700 + (imposableAnnuel - 960000) * 0.30;
+  } else if (imposableAnnuel <= 3840000) {
+    irg = 473700 + (imposableAnnuel - 1920000) * 0.33;
   } else {
+    irg = 1107300 + (imposableAnnuel - 3840000) * 0.35;
+  }
+  return irg;
+}
+
+function calculer() {
+  const brutMensuel = parseFloat(document.getElementById('brut').value);
+  if (!brutMensuel || brutMensuel <= 0) {
+    alert("Merci d'entrer un salaire brut valide.");
+    return;
+  }
+
+  const cnas = brutMensuel * 0.09;
+  const imposableMensuel = brutMensuel - cnas;
+  const imposableAnnuel = imposableMensuel * 12;
+
+  const irgAnnuel = calculIRG_annuel(imposableAnnuel);
+  const irgMensuel = irgAnnuel / 12;
+
+  const net = imposableMensuel - irgMensuel;
+
+  document.getElementById('cnas').innerText = cnas.toFixed(2);
+  document.getElementById('imposable').innerText = imposableMensuel.toFixed(2);
+  document.getElementById('irg').innerText = irgMensuel.toFixed(2);
+  document.getElementById('net').innerText = net.toFixed(2);
+
+  document.getElementById('resultat').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
