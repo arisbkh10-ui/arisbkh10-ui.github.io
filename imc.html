@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateur IMC Gratuit - Indice de Masse Corporelle</title>
+<meta name="description" content="Calcule ton IMC (indice de masse corporelle) gratuitement et connais ta catégorie de poids.">
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+  header { background: #0b5d3b; color: white; padding: 25px 20px; text-align: center; }
+  header h1 { margin: 0; font-size: 24px; }
+  .container { max-width: 500px; margin: 40px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
+  input { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+  button { margin-top: 20px; width: 100%; padding: 12px; background: #0b5d3b; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+  button:hover { background: #094a2f; }
+  .result { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; text-align: center; }
+  .result p { margin: 6px 0; }
+  .result .valeur { font-size: 28px; font-weight: bold; }
+  .result .categorie { font-size: 16px; font-weight: bold; margin-top: 5px; }
+  .back { display: block; text-align: center; margin-top: 20px; color: #0b5d3b; text-decoration: none; }
+
+  .maigreur { background: #eaf2fb; color: #2563eb; }
+  .normal { background: #eafaf1; color: #0b5d3b; }
+  .surpoids { background: #fff8e6; color: #b8860b; }
+  .obesite { background: #fdeaea; color: #c0392b; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Calculateur IMC</h1>
+</header>
+
+<div class="container">
+  <label for="poids">Poids (kg)</label>
+  <input type="number" id="poids" placeholder="Ex: 70">
+
+  <label for="taille">Taille (cm)</label>
+  <input type="number" id="taille" placeholder="Ex: 175">
+
+  <button onclick="calculer()">Calculer mon IMC</button>
+
+  <div class="result" id="resultat">
+    <p class="valeur" id="valeurIMC"></p>
+    <p class="categorie" id="categorieIMC"></p>
+  </div>
+
+  <a class="back" href="index.html">← Retour aux outils</a>
+</div>
+
+<script>
+function calculer() {
+  const poids = parseFloat(document.getElementById('poids').value);
+  const tailleCm = parseFloat(document.getElementById('taille').value);
+
+  if (!poids || poids <= 0 || !tailleCm || tailleCm <= 0) {
+    alert("Merci d'entrer un poids et une taille valides.");
+    return;
+  }
+
+  const tailleM = tailleCm / 100;
+  const imc = poids / (tailleM * tailleM);
+
+  let categorie = "";
+  let classe = "";
+
+  if (imc < 18.5) {
+    categorie = "Insuffisance pondérale";
+    classe = "maigreur";
+  } else if (imc < 25) {
+    categorie = "Corpulence normale";
+    classe = "normal";
+  } else if (imc < 30) {
+    categorie = "Surpoids";
+    classe = "surpoids";
+  } else {
+    categorie = "Obésité";
+    classe = "obesite";
+  }
+
+  const resultatDiv = document.getElementById('resultat');
+  resultatDiv.className = 'result ' + classe;
+  document.getElementById('valeurIMC').innerText = 'IMC : ' + imc.toFixed(1);
+  document.getElementById('categorieIMC').innerText = categorie;
+
+  resultatDiv.style.display = 'block';
+}
+</script>
+
+</body>
+</html>
