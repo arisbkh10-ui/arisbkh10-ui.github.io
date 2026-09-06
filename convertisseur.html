@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convertisseur d'Images Gratuit - JPG PNG WebP vers PDF</title>
+<meta name="description" content="Convertis tes images entre JPG, PNG, WebP et crée un PDF gratuitement, directement dans ton navigateur.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+  header { background: #0b5d3b; color: white; padding: 25px 20px; text-align: center; }
+  header h1 { margin: 0; font-size: 24px; }
+  .container { max-width: 550px; margin: 40px auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+
+  .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+  .tab { flex: 1; padding: 10px; text-align: center; background: #eee; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
+  .tab.active { background: #0b5d3b; color: white; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
+  input[type="file"], select { width: 100%; padding: 10px; margin-top: 6px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+  button { margin-top: 20px; width: 100%; padding: 12px; background: #0b5d3b; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+  button:hover { background: #094a2f; }
+  button:disabled { background: #ccc; cursor: not-allowed; }
+
+  .preview { margin-top: 15px; text-align: center; }
+  .preview img { max-width: 100%; max-height: 200px; border-radius: 6px; }
+
+  .fileList { margin-top: 10px; font-size: 13px; color: #555; }
+  .back { display: block; text-align: center; margin-top: 20px; color: #0b5d3b; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Convertisseur de Fichiers</h1>
+</header>
+
+<div class="container">
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('img')">Convertir Image</div>
+    <div class="tab" onclick="switchTab('pdf')">Images → PDF</div>
+  </div>
+
+  <!-- Section conversion d'image -->
+  <div class="section active" id="section-img">
+    <label>Choisis une image (JPG, PNG ou WebP)</label>
+    <input type="file" id="imgInput" accept="image/*">
+
+    <label>Convertir vers</label>
+    <select id="formatSortie">
+      <option value="image/png">PNG</option>
+      <option value="image/jpeg">JPG</option>
+      <option value="image/webp">WebP</option>
+    </select>
+
+    <div class="preview" id="imgPreview"></div>
+
+    <button id="btnConvertImg" onclick="convertirImage()" disabled>Convertir et télécharger</button>
+  </div>
+
+  <!-- Section images vers PDF -->
+  <div class="section" id="section-pdf">
+    <label>Choisis une ou plusieurs images</label>
+    <input type="file" id="pdfInput" accept="image/*" multiple>
+    <div class="fileList" id="pdfFileList"></div>
+
+    <button id="btnConvertPdf" onclick="convertirEnPDF()" disabled>Créer le PDF et télécharger</button>
+  </div>
+
+  <a class="back" href="index.html">← Retour aux outils</a>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('section-' + tab).classList.add('active');
+}
+
+// --- Conversion d'image ---
+let imageChargee = null;
+
+document.getElementById('imgInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = new Image();
+    img.onload = function() {
+      imageChargee = img;
+      document.getElementById('imgPreview').innerHTML = `<img src="${event.target.result}">`;
+      document.getElementById('btnConvertImg').disabled = false;
+    };
+    img.src = event.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function convertirImage() {
+  if (!imageChargee) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = imageChargee.width;
+  canvas.height = imageChargee.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(imageChargee, 0, 0);
+
+  const format = document.getElementById('formatSortie').value;
+  const extension = format.split('/')[1].replace('jpeg', 'jpg');
+
+  canvas.toBlob(function(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'image-convertie.' + extension;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, format, 0.92);
+}
+
+// --- Images vers PDF ---
+let imagesPourPDF = [];
+
+document.getElementById('pdfInput').addEventListener('change', function(e) {
+  imagesPourPDF = Array.from(e.target.files);
+  document.getElementById('pdfFileList').innerText =
+    imagesPourPDF.length + ' image(s) sélectionnée(s)';
+  document.getElementById('btnConvertPdf').disabled = imagesPourPDF.length === 0;
+});
+
+async function convertirEnPDF() {
+  if (imagesPourPDF.length === 0) return;
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+  let premierePage = true;
+
+  for (const file of imagesPourPDF) {
+    const dataUrl = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.readAsDataURL(file);
+    });
+
+    const img = await new Promise((resolve) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.src = dataUrl;
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const ratio = Math.min(pageWidth / img.width, pageHeight / img.height);
+    const w = img.width * ratio;
+    const h = img.height * ratio;
+
+    if (!premierePage) pdf.addPage();
+    pdf.addImage(dataUrl, 'JPEG', (pageWidth - w) / 2, (pageHeight - h) / 2, w, h);
+    premierePage = false;
+  }
+
+  pdf.save('document.pdf');
+}
+</script>
+
+</body>
+</html>
